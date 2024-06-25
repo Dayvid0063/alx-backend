@@ -51,14 +51,9 @@ class LFUCache(BaseCaching):
         Gets value linked to given key, or None if key not found.
         Update usage and frequency for accessed key.
         """
-        if key in self.cache_data:
+        if key is not None and key in self.cache_data.keys():
             del self.usage[key]
             self.usage[key] = None
             self.frequency[key] += 1
             return self.cache_data[key]
         return None
-
-    def print_cache(self):
-        """Prints the current contents of the cache"""
-        for key, value in self.cache_data.items():
-            print(f"{key}: {value}")
