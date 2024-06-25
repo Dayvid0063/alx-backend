@@ -21,11 +21,11 @@ class LFUCache(BaseCaching):
         Cache a key-value pair.
         Evicts LFU items if cache exceeds maximum capacity.
         """
+        size = len(self.cache_data)
         if key is None or item is None:
             return
 
-        if (len(self.cache_data) >= BaseCaching.MAX_ITEMS and
-           key not in self.cache_data):
+        if size >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
             lfu = min(self.frequency.values())
             lfk = [u for u, v in self.frequency.items() if v == lfu]
 
