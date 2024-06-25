@@ -57,3 +57,8 @@ class LFUCache(BaseCaching):
             self.frequency[key] += 1
             return self.cache_data[key]
         return None
+
+    def print_cache(self):
+        """Prints the current contents of the cache"""
+        for key, value in self.cache_data.items():
+            print(f"{key}: {value}")
