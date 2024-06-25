@@ -5,6 +5,7 @@
 
 
 from base_caching import BaseCaching
+from collections import defaultdict, OrderedDict
 
 
 class LFUCache(BaseCaching):
@@ -12,8 +13,8 @@ class LFUCache(BaseCaching):
     def __init__(self):
         """Initialization"""
         super().__init__()
-        self.frequency = []
-        self.usage = []
+        self.frequency = defaultdict(int)
+        self.usage = OrderedDict()
 
     def put(self, key, item):
         """
@@ -50,9 +51,9 @@ class LFUCache(BaseCaching):
         Gets value linked to given key, or None if key not found.
         Update usage and frequency for accessed key.
         """
-        if key is not None and key in self.cache_data.keys():
-            del self.usage[self.usage.index(key)]
-            self.usage.append(key)
+        if key in self.cache_data:
+            del self.usage[key]
+            self.usage[key] = None
             self.frequency[key] += 1
             return self.cache_data[key]
         return None
