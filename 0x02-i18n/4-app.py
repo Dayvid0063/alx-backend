@@ -19,23 +19,29 @@ class Config(object):
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.url_map.strict_slashes = False
 babel = Babel(app)
 
 
 @babel.localeselector
-def get_locale():
+def get_locale() -> str:
     """Best language selection and return match"""
-    u = request.args.get('locale')
-    if u in app.config['LANGUAGES']:
-        return u
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    u = request.query_string.decode('utf-8').split('&')
+    qt = dict(map(
+        lambda x: (x if '=' in x else '{}='.format(x)).split('='),
+        u,
+    ))
+    if 'locale' in qt:
+        if qt['locale'] in app.config["LANGUAGES"]:
+            return qt['locale']
+    return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
-@app.route('/', strict_slashes=False)
-def index() -> str:
+@app.route('/')
+def get_index() -> str:
     """Route handler"""
     return render_template('4-index.html')
 
 
-if __name__ == "__main__":
-    app.run(port="5000", host="0.0.0.0", debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
